@@ -1,0 +1,2 @@
+
+export const JWT_SCRETE = "NOBITAKAIF@123"
