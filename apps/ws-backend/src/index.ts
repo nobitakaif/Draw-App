@@ -1,6 +1,7 @@
 
 import { WebSocket, WebSocketServer } from "ws";
 import jwt, { JsonWebTokenError, JwtPayload } from "jsonwebtoken"
+import {prismaClient} from "@repo/db/client"
 import { JWT_SCRETE } from "@repo/backend-common/config";
 
 
@@ -60,7 +61,7 @@ wss.on('connection',(ws,req)=>{
 
     
     
-    ws.on('message', function message(data){
+    ws.on('message',async function message(data){
         // if(typeof data !== "string"){
         //     ws.close()
         //     return 
@@ -79,12 +80,20 @@ wss.on('connection',(ws,req)=>{
             if(!currentUser){
                 return
             }
-            currentUser.rooms = currentUser?.rooms.filter(x => x ===parsedData.roomId)
+            currentUser.rooms = currentUser?.rooms.filter(x => x !==parsedData.roomId)
         }
 
         if(parsedData.type == "chat"){
             const roomId = parsedData.roomId
             const message = parsedData.message
+
+            await prismaClient.chat.create({
+                data:{
+                    message,
+                    roomId,
+                    userId
+                }
+            })
 
             allUser.forEach( everyUser =>{
                 if(everyUser.rooms.includes(roomId)){

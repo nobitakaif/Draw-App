@@ -133,6 +133,23 @@ app.post("/room",middleware,async function (req,res){
 
 })
 
+app.get("/chats/:roomId",middleware,async (req,res)=>{
+    const roomId = Number(req.params.roomId)
+
+    const message = await prismaClient.chat.findMany({ // we want too many list of data so this is way findMany()
+        where:{
+            roomId:roomId
+        },
+        orderBy:{ // set the order 
+            id:"desc" // it will give us descending order last to first that means start from last 
+            // id:"asc" // it will give us ascending order from first to last 
+        },
+        take:50 // give 50 msg 
+    })
+    res.status(200).send({
+      message  
+    })
+})
 
 app.listen(3002,()=>{
     console.log("htt-server is running port on 3002")
