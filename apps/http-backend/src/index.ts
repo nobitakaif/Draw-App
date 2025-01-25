@@ -151,6 +151,31 @@ app.get("/chats/:roomId",middleware,async (req,res)=>{
     })
 })
 
+app.get("/room/:slug",async function(req,res){
+    const slug =req.params.slug
+    try{
+        const room = await prismaClient.room.findFirst({
+            where:{
+                slug
+            }
+        })
+        if(!room){
+            res.send({
+                msg:"room is not exist"
+            })
+            return 
+        }
+        res.status(200).send({
+            room
+        })
+    }catch(e){
+        res.status(403).send({
+            msg:"something went wrong"
+        })
+        return 
+    }
+})
+
 app.listen(3002,()=>{
     console.log("htt-server is running port on 3002")
 })
