@@ -1,4 +1,4 @@
-import express, { response } from "express"
+import express, { Request, response } from "express"
 import jwt  from "jsonwebtoken"
 import  {JWT_SCRETE}  from "@repo/backend-common/config"
 import { middleware } from "./middleware"
@@ -34,13 +34,14 @@ app.post("/signup", async function (req,res){
             })
             return 
         }
-        await prismaClient.user.create({
+        const addedResponse = await prismaClient.user.create({
             data:{  
                 email: data.data.email,
                 password: hashedPassword
             }
         })
         res.status(200).send({
+            id:addedResponse.id,
             msg:"you're successfully logged-in"
         })
     }
@@ -67,7 +68,7 @@ app.post("/signin",async function (req,res){
     }
 
     try{
-        const reponse=  await prismaClient.user.findFirst({
+        const reponse =  await prismaClient.user.findFirst({
             where:{
                 email:data.data.email,
             }
@@ -102,7 +103,7 @@ app.post("/signin",async function (req,res){
     
 })
 
-app.post("/room",middleware,function (req,res){
+app.post("/room",middleware,async function (req,res){
     const data = CreateRoomSchema.safeParse(req.body)
 
     if(!data.success){
@@ -112,10 +113,24 @@ app.post("/room",middleware,function (req,res){
         console.log(data.error)
         return
     }
+    // @ts-ignore
+    const userId= req.userId
+    try{
+        const response = await prismaClient.room.create({
+            data:{
+                slug : data.data.username,
+                adminId:userId
+            }
+        })
+        res.status(200).send({
+            roomId:response.id
+        })
+    }catch(e){
+        res.status(403).send({
+            msg:"Room is already exist with this name"
+        })
+    }
 
-    res.status(200).send({
-        roomId:"23123"
-    })
 })
 
 

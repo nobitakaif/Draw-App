@@ -12,6 +12,5 @@ export const SigninSchema = z.object({
 })
 
 export const CreateRoomSchema = z.object({
-    email : z.string().email().min(4).max(60)
-
+    username : z.string().min(4).max(60)
 })
