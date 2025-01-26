@@ -133,47 +133,45 @@ app.post("/room",middleware,async function (req,res){
 
 })
 
-app.get("/chats/:roomId",middleware,async (req,res)=>{
-    const roomId = Number(req.params.roomId)
-
-    const message = await prismaClient.chat.findMany({ // we want too many list of data so this is way findMany()
-        where:{
-            roomId:roomId
-        },
-        orderBy:{ // set the order 
-            id:"desc" // it will give us descending order last to first that means start from last 
-            // id:"asc" // it will give us ascending order from first to last 
-        },
-        take:50 // give 50 msg 
-    })
-    res.status(200).send({
-      message  
-    })
+app.get("/chats/:roomId",async (req,res)=>{
+   
+    try{
+        const roomId = Number(req.params.roomId)
+        console.log("alright",roomId)
+        const message = await prismaClient.chat.findMany({ // we want too many list of data so this is way findMany()
+            where:{
+                roomId:roomId
+            },
+            orderBy:{ // set the order 
+                id:"desc" // it will give us descending order last to first that means start from last 
+                // id:"asc" // it will give us ascending order from first to last 
+            },
+            take:50 // give 50 msg 
+        })
+        res.status(200).send({
+            message
+        })
+    } catch(e){
+        console.log(e)
+        res.send({
+            msg:"error in chat/:roomId"
+        })
+    }
 })
 
 app.get("/room/:slug",async function(req,res){
     const slug =req.params.slug
-    try{
+    
         const room = await prismaClient.room.findFirst({
             where:{
                 slug
             }
         })
-        if(!room){
-            res.send({
-                msg:"room is not exist"
-            })
-            return 
-        }
+
         res.status(200).send({
             room
         })
-    }catch(e){
-        res.status(403).send({
-            msg:"something went wrong"
-        })
-        return 
-    }
+
 })
 
 app.listen(3002,()=>{

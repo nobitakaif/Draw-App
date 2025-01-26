@@ -15,7 +15,7 @@ export default function Home() {
       justifyContent:"center",
       alignItems:"center"
     }}>
-       <input onChange={(e)=>
+       <input value={roomId} onChange={(e)=>
           setRoomId(e.target.value)
         } type="text" placeholder="enter room-id" style={{padding:"3px"}}></input>
       <button onClick={()=>{
