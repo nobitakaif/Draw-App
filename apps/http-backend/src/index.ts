@@ -137,7 +137,7 @@ app.get("/chats/:roomId",async (req,res)=>{
    
     try{
         const roomId = Number(req.params.roomId)
-        console.log("alright",roomId)
+        // console.log("alright",roomId)
         const message = await prismaClient.chat.findMany({ // we want too many list of data so this is way findMany()
             where:{
                 roomId:roomId
