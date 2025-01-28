@@ -96,13 +96,13 @@ wss.on('connection',(ws,req)=>{
             })
 
             allUser.forEach( everyUser =>{
-                if(everyUser.rooms.includes(roomId)){
+                if(everyUser.rooms.includes(roomId)){ // if(everyUser.rooms==roomId)
                     everyUser.ws.send(JSON.stringify({
                         type : "chat",
                         message : message,
-                        
+                        roomId
                     }))
-                }
+                } 
             })
         }
     })
