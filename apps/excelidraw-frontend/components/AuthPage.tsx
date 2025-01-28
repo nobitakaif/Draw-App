@@ -12,7 +12,7 @@ export function AuthPage(props:AuthType){
 
     const [userInput,setUserInput] = useState<boolean>(false)
     const [userPassword,setUserPassword] = useState<boolean>(false)
-    const [msg,setMsg]= useState<boolean>(false)
+    const [msg,setMsg]= useState<boolean>()
 
 
 
